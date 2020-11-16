@@ -25,6 +25,20 @@ bool check_registration_record(long key){
     cout<<"Registration record not opened"<<endl;
     return false;
 }
+bool check_entry_record(long key){
+    string room_no, t,date;
+    long roll_no;
+    ifstream fin("records/entry");
+    bool flag = false;
+    while(fin>>roll_no>>room_no>>date>>t){
+        if(key==roll_no){
+            flag = true;
+            break;
+        }
+    }
+    fin.close();
+    return flag;
+}
 int main(){    
     int choice;
     string welcome_string {"Welcome to main-menu"};
@@ -80,16 +94,16 @@ int main(){
                     bool flag = check_registration_record(roll_no);
                     if(flag){
                         Time exit_time;
-                        string room_no;
-                        // cout<<"=================================="<<endl;
+                        string room_no,date;
                         cout<<"Enter Hostel exit time (hours min, use 24 hour format): "; cin>>exit_time;
                         cout<<"Enter your room number:(Use underscore in place of spaces) "; cin>>room_no;
+                        cout<<"Enter date:(dd/mm/yy) "; cin>>date;
                         ofstream fout("records/entry",ios::app);
                         if(!fout){
                             cerr<<"Error in opening the entry file"<<endl;
                             return 1;
                         }
-                        fout<<roll_no<<" "<<room_no<<" "<<exit_time<<"\n";
+                        fout<<roll_no<<" "<<room_no<<" "<<date<<" "<<exit_time<<"-open1"<<"\n";
                         fout.close();
                         cout<<"Your entry has been made. Enjoy your time!"<<endl;
                     }
@@ -98,7 +112,53 @@ int main(){
                     }
                 }
                 break;
-                case 2:
+                case 2:{
+                    long roll_no;
+                    cout<<"Enter your roll_no: "; cin>>roll_no;
+                    bool flag = check_entry_record(roll_no);
+                    if(!flag){
+                        cout<<"You don't have an entry"<<endl;
+                        break;
+                    }
+                    else{
+                        Time closing_time;
+                        cout<<"Enter closing time: "; cin>>closing_time;
+                        fstream f_file("records/entry");
+                        long search;
+                        bool flag =false;
+                        while(f_file>>search){
+                            if(search==roll_no){
+                                char c;
+                                while(f_file.get(c)){
+                                    if(c=='-'){
+                                        f_file.seekp(f_file.tellg());
+                                        f_file.get(c);
+                                        if(c=='o'){
+                                            f_file.seekp(-1,ios::cur);
+                                            f_file<<closing_time;
+                                            cout<<"Closed Successfully"<<endl;
+                                        }
+                                        else{
+                                            flag = true;
+                                        }
+                                        break;
+                                    }
+                                }
+                                if(!flag)
+                                    break;
+                            }
+                            else{
+                                char c;
+                                while(f_file.get(c)){
+                                    if(c=='\n')
+                                        break;
+                                }
+                            }
+                        }
+                        f_file.close();
+                    }
+                
+                }
                 case 3:
                 case 4: break;
             }

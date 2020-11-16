@@ -5,7 +5,18 @@ using namespace std;
 Time::Time(int hours, int min): hours{hours},min{min}{}
 
 ostream &operator<<(ostream &dout,const Time &rhs){
-    dout<<rhs.hours<<":"<<rhs.min;
+    if(rhs.hours<10){
+        dout<<"0"<<rhs.hours;
+    }
+    else{
+        dout<<rhs.hours;
+    }
+    if(rhs.min<10){
+        dout<<":0"<<rhs.min;
+    }
+    else{
+        dout<<":"<<rhs.min;
+    }
     return dout;
 }
 
