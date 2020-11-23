@@ -159,7 +159,46 @@ int main(){
                     }
                 
                 }
-                case 3:
+                case 3:{
+                    long roll_no;
+                    cout<<"Enter your roll number: "; cin>>roll_no;
+                    ifstream fin("records/registered_students");
+                    if(!fin){
+                        cerr<<"Error in opening student record file. "<<endl;
+                        return 1;
+                    }
+                    string a,b,c,d,e;
+                    long key;
+                    bool flag = false;
+                    while(fin>>a>>key>>b>>c>>d>>e){
+                        if(roll_no==key){
+                            flag = true;
+                            ofstream fout("records/new_outpass");
+                            fout<<"Name: "<<a<<"\n";
+                            fout<<"Roll Number: "<<roll_no<<"\n";
+                            fout<<"Branch: "<<b<<"\n";
+                            fout<<"Hostel: "<<c<<"\n";
+                            fout<<"Year: "<<d<<"\n";
+                            fout<<"Room Number: "<<e<<"\n";
+                            string date,days;
+                            Time x;
+                            cout<<"Enter date of leaving(dd/mm/yy): "; cin>>date;
+                            cout<<"Enter return date(dd/mm/yy): "; cin>>days;
+                            cout<<"Enter time of leaving(24-hour-format): "; cin>>x;
+                            fout<<"Date of leaving: "<<date<<"\n";
+                            fout<<"Date of return: "<<days<<"\n";
+                            fout<<"Time of leaving the hostel: "<<x<<"\n";
+                            cout<<"Your outpass has been generated successfully"<<endl;
+                            fout.close();
+                            break;
+                        }
+                    }
+                    fin.close();
+                    if(!flag){
+                        cout<<"You are not registered. Please register first"<<endl;
+                    }
+                }
+                break;
                 case 4: break;
             }
         }
