@@ -159,6 +159,7 @@ int main(){
                     }
                 
                 }
+                break;
                 case 3:{
                     long roll_no;
                     cout<<"Enter your roll number: "; cin>>roll_no;
