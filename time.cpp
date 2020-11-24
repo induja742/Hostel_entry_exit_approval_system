@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string>
 #include"header_files/time.h"
 using namespace std;
 
@@ -23,4 +24,22 @@ ostream &operator<<(ostream &dout,const Time &rhs){
 istream &operator>>(istream &din,Time &rhs){
     cin>>rhs.hours>>rhs.min;
     return din;
+}
+std::string Time::toString(){
+   string s;
+   if(hours<10){
+       s+='0';
+       s+=to_string(hours);
+   } 
+   else{
+       s+=to_string(hours);
+   }
+   if(min<10){
+       s+='0';
+       s+=to_string(min);
+   } 
+   else{
+       s+=to_string(min);
+   }
+   return s;
 }
