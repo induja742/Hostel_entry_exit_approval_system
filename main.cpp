@@ -25,13 +25,13 @@ bool check_registration_record(long key){
     cout<<"Registration record not opened"<<endl;
     return false;
 }
-bool check_entry_record(long key){
+bool check_open_entry_record(long key){
     string room_no, t1,t2,date;
     long roll_no;
     ifstream fin("records/entry");
     bool flag = false;
     while(fin>>roll_no>>room_no>>date>>t1>>t2){
-        if(key==roll_no && t2=="open1"){
+        if(key==roll_no && t2 == "open1"){
             flag = true;
             break;
         }
@@ -93,7 +93,7 @@ int main(){
                     cout<<"Enter your roll_no: "; cin>>roll_no;
                     bool flag = check_registration_record(roll_no);
                     if(flag){
-                        if(!check_entry_record(roll_no)){
+                        if(!check_open_entry_record(roll_no)){
                             Time exit_time;
                             string room_no,date;
                             cout<<"Enter Hostel exit time (hours min, use 24 hour format): "; cin>>exit_time;
@@ -120,7 +120,7 @@ int main(){
                 case 2:{
                     long roll_no;
                     cout<<"Enter your roll_no: "; cin>>roll_no;
-                    bool flag = check_entry_record(roll_no);
+                    bool flag = check_open_entry_record(roll_no);
                     if(!flag){
                         cout<<"You don't have an open entry"<<endl;
                         break;
@@ -128,22 +128,29 @@ int main(){
                     else{
                         Time closing_time;
                         cout<<"Enter closing time: "; cin>>closing_time;
-                        fstream f_file("records/entry");
+                        ifstream f_file("records/entry");
                         long search;
-                        string a1,a2,a3,time;
-                        bool flag =false;
-                        while(f_file>>search>>a1>>a2>>a3>>time){
-                            if(search==roll_no && time == "open1"){
-                                //Pending
-                                    f_file<<closing_time;
-                                    cout<<"Your entry has been closed"<<endl;
-                                    flag = true;
-                                    break;
+                        string room, date , t1,t2;
+                        ofstream fout("records/entry_new",ios::out);
+                        while(f_file>>search>>room>>date>>t1>>t2){
+                            if(search!=roll_no){
+                                fout<<search<<" "<<room<<" "<<date<<" "<<t1<<" "<<t2;
                             }
+                            else{
+                                if(t2=="open1"){
+                                    fout<<search<<" "<<room<<" "<<date<<" "<<t1<<" "<<closing_time;
+                                }
+                                else{
+                                    fout<<search<<" "<<room<<" "<<date<<" "<<t1<<" "<<t2;
+                                }
+                            }
+                            fout<<"\n";
                         }
-                        if(!flag){
-                            cout<<"Entry already closed"<<endl;
-                        }
+                        cout<<"Your entry has been closed. "<<endl;
+                        f_file.close();
+                        fout.close();
+                        remove("records/entry");
+                        rename("records/entry_new","records/entry");
                     }    
                 
                 }
